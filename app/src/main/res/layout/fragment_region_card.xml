@@ -5,12 +5,15 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:id="@+id/region_card"
+
         tools:context=".RegionCardFragment"
         app:layoutManager="LinearLayoutManager"
-        card_view:cardCornerRadius="5dp"
-        card_view:contentPadding="5dp"
-    android:layout_margin="5dp">
+
+        card_view:cardCornerRadius="@dimen/card_corner_radius"
+        card_view:contentPadding="@dimen/card_content_padding"
+    card_view:cardElevation="@dimen/card_elevation">
 
     <RelativeLayout
         android:layout_width="match_parent"

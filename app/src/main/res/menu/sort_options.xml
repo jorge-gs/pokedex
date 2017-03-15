@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/sort_region"
+        android:id="@+id/sort_region" />
+    <item android:title="@string/sort_generation"
+        android:id="@+id/sort_generation" />
+    <item android:title="@string/sort_national"
+        android:id="@+id/sort_national" />
+</menu>
