@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">PokéDex</string>
 
+    <!-- Sorting -->
     <string name="sort_region">Region</string>
     <string name="sort_generation">Generation</string>
     <string name="sort_national">National</string>
+
+    <!-- Regions -->
+    <string name="region_kanto">Kanto</string>
+    <string name="region_johto">Johto</string>
+    <string name="region_hoenn">Hoenn</string>
+    <string name="region_sinnoh">Sinnoh</string>
+    <string name="region_unova">Unova</string>
+    <string name="region_kalos">Kalos</string>
+    <string name="region_alola">Alola</string>
 </resources>
