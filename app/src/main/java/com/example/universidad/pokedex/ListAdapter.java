@@ -14,7 +14,7 @@ import android.widget.TextView;
  */
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
-    boolean regions = true;
+    boolean displaysRegions = true;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
@@ -34,8 +34,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        SortItem[] items = this.regions ? SortItem.regions : SortItem.generations;
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        SortItem[] items = this.displaysRegions ? SortItem.regions : SortItem.generations;
 
         Drawable image = ResourcesCompat.getDrawable(holder.itemView.getResources(), items[position].drawable, null);
         holder.image.setImageDrawable(image);

@@ -1,5 +1,8 @@
 package com.example.universidad.pokedex;
 
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,11 +35,11 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
 
         switch (item.getItemId()) {
             case R.id.sort_region:
-                fragment.adapter.regions = true;
+                fragment.adapter.displaysRegions = true;
                 Toast.makeText(getBaseContext(), "Regional Pokédex", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_generation:
-                fragment.adapter.regions = false;
+                fragment.adapter.displaysRegions = false;
                 Toast.makeText(getBaseContext(), "Pokémon by generation", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_national:
@@ -50,6 +53,5 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
 
     @Override
     public void onFragmentInteraction() {
-
     }
 }
