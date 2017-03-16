@@ -10,7 +10,7 @@
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:id="@+id/region_card"
 
-    tools:context=".RegionCardFragment"
+    tools:context=".CardFragment"
     app:layoutManager="LinearLayoutManager"
 
     card_view:cardCornerRadius="@dimen/card_corner_radius"

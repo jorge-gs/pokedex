@@ -9,14 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 /**
  * Created by universidad on 3/15/17.
  */
 
-public class RegionListAdapter extends RecyclerView.Adapter<RegionListAdapter.ViewHolder> {
-
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    boolean regions = true;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
@@ -32,14 +30,16 @@ public class RegionListAdapter extends RecyclerView.Adapter<RegionListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return Region.regions.length;
+        return SortItem.regions.length;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Drawable image = ResourcesCompat.getDrawable(holder.itemView.getResources(), Region.regions[position].drawable, null);
+        SortItem[] items = this.regions ? SortItem.regions : SortItem.generations;
+
+        Drawable image = ResourcesCompat.getDrawable(holder.itemView.getResources(), items[position].drawable, null);
         holder.image.setImageDrawable(image);
-        holder.name.setText(holder.itemView.getResources().getString(Region.regions[position].name));
+        holder.name.setText(holder.itemView.getResources().getString(items[position].name));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +50,8 @@ public class RegionListAdapter extends RecyclerView.Adapter<RegionListAdapter.Vi
     }
 
     @Override
-    public RegionListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_region_card, parent, false);
+    public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;

@@ -5,6 +5,6 @@
     android:id="@+id/region_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.universidad.pokedex.RegionListFragment"
-    tools:listitem="@layout/fragment_region_card"
+    tools:context="com.example.universidad.pokedex.ListFragment"
+    tools:listitem="@layout/fragment_list_card"
     app:layoutManager="LinearLayoutManager" />

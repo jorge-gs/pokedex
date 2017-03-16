@@ -14,4 +14,13 @@
     <string name="region_unova">Unova</string>
     <string name="region_kalos">Kalos</string>
     <string name="region_alola">Alola</string>
+
+    <!-- Generations -->
+    <string name="generation_one">Generation I</string>
+    <string name="generation_two">Generation II</string>
+    <string name="generation_three">Generation III</string>
+    <string name="generation_four">Generation IV</string>
+    <string name="generation_five">Generation V</string>
+    <string name="generation_six">Generation VI</string>
+    <string name="generation_seven">Generation VII</string>
 </resources>

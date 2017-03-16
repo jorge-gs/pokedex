@@ -18,8 +18,8 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.example.universidad.pokedex.RegionListFragment"
+        android:name="com.example.universidad.pokedex.ListFragment"
         android:id="@+id/fragment"
-        tools:layout="@layout/fragment_region_list" />
+        tools:layout="@layout/fragment_list" />
 
 </LinearLayout>
