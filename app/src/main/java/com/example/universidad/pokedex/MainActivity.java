@@ -1,6 +1,6 @@
 package com.example.universidad.pokedex;
 
-import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements ListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CardFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,14 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        ListFragment fragment = ListFragment.newInstance();
+        replaceFragment(fragment);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sort_options, menu);
@@ -31,27 +39,42 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        ListFragment listFragment = (fragment instanceof ListFragment) ? (ListFragment) fragment : null ;
+        if (listFragment == null) {
+            listFragment = ListFragment.newInstance();
+            replaceFragment(listFragment);
+        }
 
         switch (item.getItemId()) {
             case R.id.sort_region:
-                fragment.adapter.displaysRegions = true;
+                listFragment.adapter.displaysRegions = true;
                 Toast.makeText(getBaseContext(), "Regional Pokédex", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_generation:
-                fragment.adapter.displaysRegions = false;
+                listFragment.adapter.displaysRegions = false;
                 Toast.makeText(getBaseContext(), "Pokémon by generation", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_national:
                 Toast.makeText(getBaseContext(), "National Pokédex", Toast.LENGTH_SHORT).show();
-                break;
+                return  super.onOptionsItemSelected(item);
         }
 
-        fragment.adapter.notifyDataSetChanged();
+        listFragment.adapter.notifyDataSetChanged();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onFragmentInteraction() {
+        PokemonFragment fragment = PokemonFragment.newInstance();
+        replaceFragment(fragment);
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 }

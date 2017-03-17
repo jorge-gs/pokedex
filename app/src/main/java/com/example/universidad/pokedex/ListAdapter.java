@@ -1,5 +1,6 @@
 package com.example.universidad.pokedex;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
@@ -45,13 +46,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 //TODO: set callback
+                Context context = holder.itemView.getContext();
+                if (context instanceof CardFragment.OnFragmentInteractionListener) {
+                    CardFragment.OnFragmentInteractionListener listener = (CardFragment.OnFragmentInteractionListener) context;
+                    listener.onFragmentInteraction();
+                }
             }
         });
     }
 
     @Override
     public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
