@@ -11,7 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements CardFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CardFragment.OnFragmentInteractionListener, PokemonCardFragment.OnPokemonPressListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements CardFragment.OnFr
                 Toast.makeText(getBaseContext(), "Pokémon by generation", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_national:
+                Pokemon.requestPokemon(0, true, this);
+
                 Toast.makeText(getBaseContext(), "National Pokédex", Toast.LENGTH_SHORT).show();
                 return  super.onOptionsItemSelected(item);
         }
@@ -66,10 +68,17 @@ public class MainActivity extends AppCompatActivity implements CardFragment.OnFr
 
     @Override
     public void onFragmentInteraction(int position) {
-        Pokemon.requestPokemon(position + 1, true, this);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        SortListFragment sortListFragment = (fragment instanceof SortListFragment) ? (SortListFragment) fragment : null;
+        if (sortListFragment != null) {
+            Pokemon.requestPokemon(position + 1, sortListFragment.adapter.displaysRegions, this);
+        }
+    }
 
-        /*PokemonListFragment fragment = PokemonListFragment.newInstance();
-        replaceFragment(fragment);*/
+    @Override
+    public void onPokemonPress(int index) {
+        PokemonFragment fragment = PokemonFragment.newInstance(index);
+        replaceFragment(fragment);
     }
 
     private void replaceFragment(Fragment fragment) {

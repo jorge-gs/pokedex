@@ -1,5 +1,6 @@
 package com.example.universidad.pokedex;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +36,18 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.networkImage.setImageUrl(Pokemon.pokemon.get(position).image, VolleySingleton.getInstance(holder.itemView.getContext()).getImageLoader());
         holder.description.setText(Pokemon.pokemon.get(position).entry + ". " + Pokemon.pokemon.get(position).name);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Context context = holder.itemView.getContext();
+                if (context instanceof PokemonCardFragment.OnPokemonPressListener) {
+                    PokemonCardFragment.OnPokemonPressListener listener = (PokemonCardFragment.OnPokemonPressListener) context;
+                    listener.onPokemonPress(position);
+                }
             }
         });
     }

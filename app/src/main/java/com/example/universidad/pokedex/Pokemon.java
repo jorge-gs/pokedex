@@ -2,6 +2,8 @@ package com.example.universidad.pokedex;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -43,24 +45,45 @@ public class Pokemon {
         JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Pokemon.pokemon.clear();
                 try {
                     if (isRegion) {
                         JSONArray entries = response.getJSONArray("pokemon_entries");
-                        for (int i = 0; i < 1/*entries.length()*/; i++) {
+                        for (int i = 0; i < 10/*entries.length()*/; i++) {
                             JSONObject entry = entries.getJSONObject(i);
                             JSONObject species = entry.getJSONObject("pokemon_species");
                             int number = entry.getInt("entry_number");
 
-                            Pokemon.requestSpecies(species, i, context);
                             Pokemon pokemon = new Pokemon(number, null, null, null);
                             Pokemon.pokemon.add(pokemon);
+                            Pokemon.requestSpecies(species, i, context);
                         }
                     } else {
                         JSONArray pokemon_species = response.getJSONArray("pokemon_species");
                         for (int i = 0; i < pokemon_species.length(); i++) {
                             JSONObject species = pokemon_species.getJSONObject(i);
 
+                            Pokemon pokemon = new Pokemon(i + 1, null, null, null);
+                            Pokemon.pokemon.add(pokemon);
                             Pokemon.requestSpecies(species, i, context);
+                        }
+                    }
+
+                    if (context instanceof MainActivity) {
+                        MainActivity activity = (MainActivity) context;
+
+                        FragmentManager manager = activity.getSupportFragmentManager();
+                        Fragment fragment = manager.findFragmentById(R.id.fragment_container);
+                        PokemonListFragment pokemonListFragment = (fragment instanceof PokemonListFragment) ? (PokemonListFragment) fragment : null;
+                        if (pokemonListFragment == null) {
+                            FragmentTransaction transaction = manager.beginTransaction();
+
+                            pokemonListFragment = PokemonListFragment.newInstance();
+
+                            transaction.replace(R.id.fragment_container, pokemonListFragment);
+                            transaction.commit();
+                        } else {
+                            pokemonListFragment.adapter.notifyDataSetChanged();
                         }
                     }
                 } catch (JSONException exception) {
@@ -137,7 +160,7 @@ public class Pokemon {
         }
     }
 
-    private static void requestImage(JSONObject pokemon, final int index, Context context) {
+    private static void requestImage(JSONObject pokemon, final int index, final Context context) {
         try {
             String url = pokemon.getString("url");
             JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
@@ -148,7 +171,16 @@ public class Pokemon {
                         String url = sprites.getString("front_default");
 
                         Pokemon.pokemon.get(index).image = url;
-                        Pokemon.pokemon.size();
+                        if (context instanceof MainActivity) {
+                            MainActivity activity = (MainActivity) context;
+
+                            FragmentManager manager = activity.getSupportFragmentManager();
+                            Fragment fragment = manager.findFragmentById(R.id.fragment_container);
+                            PokemonListFragment pokemonListFragment = (fragment instanceof PokemonListFragment) ? (PokemonListFragment) fragment : null;
+                            if (pokemonListFragment != null) {
+                                pokemonListFragment.adapter.notifyItemChanged(index);
+                            }
+                        }
                     } catch (JSONException exception) {
                         exception.printStackTrace();
                     }
