@@ -24,8 +24,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
 
-            this.image = (ImageView) view.findViewById(R.id.region_preview);
-            this.name = (TextView) view.findViewById(R.id.region_name);
+            this.image = (ImageView) view.findViewById(R.id.sort_preview);
+            this.name = (TextView) view.findViewById(R.id.sort_name);
         }
     }
 
@@ -35,7 +35,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         SortItem[] items = this.displaysRegions ? SortItem.regions : SortItem.generations;
 
         Drawable image = ResourcesCompat.getDrawable(holder.itemView.getResources(), items[position].drawable, null);
@@ -49,7 +49,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 Context context = holder.itemView.getContext();
                 if (context instanceof CardFragment.OnFragmentInteractionListener) {
                     CardFragment.OnFragmentInteractionListener listener = (CardFragment.OnFragmentInteractionListener) context;
-                    listener.onFragmentInteraction();
+                    listener.onFragmentInteraction(position);
                 }
             }
         });
@@ -57,7 +57,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_sort_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;

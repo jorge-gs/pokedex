@@ -1,10 +1,13 @@
 package com.example.universidad.pokedex;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
@@ -22,105 +25,144 @@ public class Pokemon {
     int entry;
     String name;
     String description;
-    String imageURL;
+    String image;
 
     public Pokemon(int entry, String name, String description, String image) {
         this.entry = entry;
         this.name = name;
         this.description = description;
-        this.imageURL = image;
+        this.image = image;
     }
 
-    public static List<Pokemon> pokemonList = new ArrayList<Pokemon>();
+    public static List<Pokemon> pokemon = new ArrayList<Pokemon>();
 
-    public static void requestPokemon(int gen, boolean region, final Context context) {
-        String url = region ? "http://pokeapi.co/api/v2/pokedex/N/" : "http://pokeapi.co/api/v2/generation/N/";
-        url = url.replace("N", "" + (region ? gen + 1: gen));
+    public static void requestPokemon(int gen, final boolean isRegion, final Context context) {
+        String url = isRegion ? "http://pokeapi.co/api/v2/pokedex/N/" : "http://pokeapi.co/api/v2/generation/N/";
+        url = url.replace("N", "" + (isRegion ? gen + 1: gen));
 
         JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray entries = response.getJSONArray("entries");
-                    for (int i = 0; i < entries.length(); i++) {
-                        int entry_number = entries.getJSONObject(i).getInt("entry_number");
+                    if (isRegion) {
+                        JSONArray entries = response.getJSONArray("pokemon_entries");
+                        for (int i = 0; i < 1/*entries.length()*/; i++) {
+                            JSONObject entry = entries.getJSONObject(i);
+                            JSONObject species = entry.getJSONObject("pokemon_species");
+                            int number = entry.getInt("entry_number");
 
-                        String pokemon_name = null;
-                        JSONObject pokemon_species = entries.getJSONObject(i).getJSONObject("pokemon_species");
-                        JSONArray names = pokemon_species.getJSONArray("names");
-                        for (int j = 0; j < names.length(); j++) {
-                            JSONObject name = names.getJSONObject(j);
-                            JSONObject language = name.getJSONObject("language");
-                            if (language.getString("name").equals("en")) {
-                                pokemon_name = language.getString("name");
-                                break;
-                            }
+                            Pokemon.requestSpecies(species, i, context);
+                            Pokemon pokemon = new Pokemon(number, null, null, null);
+                            Pokemon.pokemon.add(pokemon);
                         }
+                    } else {
+                        JSONArray pokemon_species = response.getJSONArray("pokemon_species");
+                        for (int i = 0; i < pokemon_species.length(); i++) {
+                            JSONObject species = pokemon_species.getJSONObject(i);
 
-                        String description = null;
-                        JSONArray flavor_texts = pokemon_species.getJSONArray("flavor_text_entries");
-                        for (int j = 0; j < flavor_texts.length(); j++) {
-                            JSONObject flavor_text = flavor_texts.getJSONObject(j);
-                            JSONObject language = flavor_text.getJSONObject("language");
-                            if (language.getString("name").equals("en")) {
-                                description = flavor_text.getString("flavor_text");
-                                break;
-                            }
-                        }
-
-                        String pokemonURL = null;
-                        JSONArray varieties = pokemon_species.getJSONArray("varieties");
-                        for (int j = 0; j < varieties.length(); j++) {
-                            JSONObject variety = varieties.getJSONObject(j);
-                            if (variety.getBoolean("is_default")) {
-                                JSONObject pokemon = variety.getJSONObject("pokemonList");
-                                pokemonURL = pokemon.getString("url");
-                                break;
-                            }
-                        }
-
-                        if (pokemon_name != null && description != null && pokemonURL != null) {
-                            createPokemon(entry_number, pokemon_name, description, pokemonURL, context);
+                            Pokemon.requestSpecies(species, i, context);
                         }
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
-        queue.add(request);
-    }
-
-    private static void createPokemon(final int entry, final String name, final String description, String pokemonURL, Context context) {
-        final JsonObjectRequest request = new JsonObjectRequest(pokemonURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject sprites = response.getJSONObject("sprites");
-                    String url = sprites.getString("front_default");
-                    Pokemon.pokemonList.add(new Pokemon(entry, name, description, url));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (JSONException exception) {
+                    exception.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                error.printStackTrace();
             }
         });
-
-
-        RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
-        queue.add(request);
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
+
+    private static void requestSpecies(JSONObject species, final int index, final Context context) {
+        try {
+            String url = species.getString("url");
+            final JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Pokemon pokemon = Pokemon.pokemon.get(index);
+
+                        JSONArray names = response.getJSONArray("names");
+                        for (int i = 0; i < names.length(); i++) {
+                            JSONObject localizedName = names.getJSONObject(i);
+                            JSONObject language = localizedName.getJSONObject("language");
+                            String languageName = language.getString("name");
+                            if (languageName.equals("en")) {
+                                String name = localizedName.getString("name");
+                                pokemon.name = name;
+                                break;
+                            }
+                        }
+
+                        JSONArray descriptions = response.getJSONArray("flavor_text_entries");
+                        for (int i = 0; i < descriptions.length(); i++) {
+                            JSONObject description = descriptions.getJSONObject(i);
+                            JSONObject language = description.getJSONObject("language");
+                            String languageName = language.getString("name");
+                            if (languageName.equals("en")) {
+                                String text = description.getString("flavor_text");
+                                pokemon.description = text;
+                                break;
+                            }
+                        }
+
+                        JSONArray varieties = response.getJSONArray("varieties");
+                        for (int i = 0; i < varieties.length(); i++) {
+                            JSONObject variety = varieties.getJSONObject(i);
+                            boolean isDefault = variety.getBoolean("is_default");
+                            if (isDefault) {
+                                JSONObject pokemonJSON = variety.getJSONObject("pokemon");
+
+                                Pokemon.requestImage(pokemonJSON, index, context);
+                                break;
+                            }
+                        }
+                    } catch (JSONException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            VolleySingleton.getInstance(context).addToRequestQueue(request);
+
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private static void requestImage(JSONObject pokemon, final int index, Context context) {
+        try {
+            String url = pokemon.getString("url");
+            JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject sprites = response.getJSONObject("sprites");
+                        String url = sprites.getString("front_default");
+
+                        Pokemon.pokemon.get(index).image = url;
+                        Pokemon.pokemon.size();
+                    } catch (JSONException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            VolleySingleton.getInstance(context).addToRequestQueue(request);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+    }
+
 }

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements CardFragment.OnFr
     protected void onStart() {
         super.onStart();
 
-        ListFragment fragment = ListFragment.newInstance();
+        SortListFragment fragment = SortListFragment.newInstance();
         replaceFragment(fragment);
     }
 
@@ -40,19 +40,19 @@ public class MainActivity extends AppCompatActivity implements CardFragment.OnFr
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        ListFragment listFragment = (fragment instanceof ListFragment) ? (ListFragment) fragment : null ;
-        if (listFragment == null) {
-            listFragment = ListFragment.newInstance();
-            replaceFragment(listFragment);
+        SortListFragment sortListFragment = (fragment instanceof SortListFragment) ? (SortListFragment) fragment : null ;
+        if (sortListFragment == null) {
+            sortListFragment = SortListFragment.newInstance();
+            replaceFragment(sortListFragment);
         }
 
         switch (item.getItemId()) {
             case R.id.sort_region:
-                listFragment.adapter.displaysRegions = true;
+                sortListFragment.adapter.displaysRegions = true;
                 Toast.makeText(getBaseContext(), "Regional Pokédex", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_generation:
-                listFragment.adapter.displaysRegions = false;
+                sortListFragment.adapter.displaysRegions = false;
                 Toast.makeText(getBaseContext(), "Pokémon by generation", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sort_national:
@@ -60,14 +60,16 @@ public class MainActivity extends AppCompatActivity implements CardFragment.OnFr
                 return  super.onOptionsItemSelected(item);
         }
 
-        listFragment.adapter.notifyDataSetChanged();
+        sortListFragment.adapter.notifyDataSetChanged();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onFragmentInteraction() {
-        PokemonFragment fragment = PokemonFragment.newInstance();
-        replaceFragment(fragment);
+    public void onFragmentInteraction(int position) {
+        Pokemon.requestPokemon(position + 1, true, this);
+
+        /*PokemonListFragment fragment = PokemonListFragment.newInstance();
+        replaceFragment(fragment);*/
     }
 
     private void replaceFragment(Fragment fragment) {
