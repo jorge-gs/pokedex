@@ -9,15 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class SortListFragment extends Fragment {
+public class ListFragment extends Fragment {
     public ListAdapter adapter = new ListAdapter();
 
-    public SortListFragment() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
-    public static SortListFragment newInstance() {
-        SortListFragment fragment = new SortListFragment();
+    public static ListFragment newInstance() {
+        ListFragment fragment = new ListFragment();
         return fragment;
     }
 

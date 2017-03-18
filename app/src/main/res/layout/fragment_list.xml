@@ -5,6 +5,6 @@
     android:id="@+id/fragment_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.universidad.pokedex.SortListFragment"
+    tools:context="com.example.universidad.pokedex.ListFragment"
     tools:listitem="@layout/fragment_card"
     app:layoutManager="LinearLayoutManager" />

@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
-
 /**
  * Created by universidad on 3/15/17.
  */
@@ -37,7 +35,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         SortItem[] items = this.displaysRegions ? SortItem.regions : SortItem.generations;
 
         Drawable image = ResourcesCompat.getDrawable(holder.itemView.getResources(), items[position].drawable, null);
@@ -51,7 +49,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 Context context = holder.itemView.getContext();
                 if (context instanceof CardFragment.OnFragmentInteractionListener) {
                     CardFragment.OnFragmentInteractionListener listener = (CardFragment.OnFragmentInteractionListener) context;
-                    listener.onFragmentInteraction(position);
+                    listener.onFragmentInteraction();
                 }
             }
         });
