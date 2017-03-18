@@ -2,9 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_list"
+    android:id="@+id/pokemon_list_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.universidad.pokedex.SortListFragment"
-    tools:listitem="@layout/fragment_card"
+    tools:context="com.example.universidad.pokedex.PokemonListFragment"
+    tools:listitem="@layout/fragment_pokemon_card"
     app:layoutManager="LinearLayoutManager" />

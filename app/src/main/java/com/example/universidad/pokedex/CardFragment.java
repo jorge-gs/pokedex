@@ -47,6 +47,6 @@ public class CardFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction();
+        void onFragmentInteraction(int position);
     }
 }
